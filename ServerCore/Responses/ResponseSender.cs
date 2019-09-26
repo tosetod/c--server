@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using ServerInterfaces;
@@ -9,7 +10,7 @@ namespace ServerCore.Responses
 {
     internal static class ResponseSender
     {
-        public static void Send(this Response response, Socket socket, WebServerOptions serverOptions)
+        public static void Send(this Response response, SslStream sslStream, WebServerOptions serverOptions)
         {
             var logger = serverOptions.Logger;
             logger.Debug("Start sending response");
@@ -37,7 +38,7 @@ Content-Type: {response.ContentType}";
                 messageBytes = messageBytes.Concat(response.Bytes).ToArray();
             }
             logger.Debug($"Sending {messageBytes.Length} bytes to socket");
-            socket.Send(messageBytes);
+            sslStream.Write(messageBytes);
             logger.Debug($"Sent {messageBytes.Length} bytes to socket");
         }
     }

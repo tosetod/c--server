@@ -20,13 +20,12 @@ namespace ServerRunner
             server
                 .UseResponseGenerator<PngResponseGenerator>()
                 .UseResponseGenerator<PostMethodResponseGenerator>()
-                //.UseResponseGenerator(new StaticResponseGenerator(@"C:\Users\Tosho.Todorovski\Desktop\Projects\sedc7-11-3-csserver\SedcServer\ServerRunner\static"))
-                .UseResponseGenerator(new IndexResponseGenerator(@"C:\Users\Tosho.Todorovski\Desktop\Projects\sedc7-11-3-csserver\SedcServer\ServerRunner\static"))
+                .UseResponseGenerator(new StaticResponseGenerator(@"C:\Users\Toshe\Desktop\Projects\csharp-server\ServerRunner\static"))
                 .UseResponseGenerator<FaviconResponseGenerator>()
                 .UseResponsePostProcessor<NotFoundPostProcessor>();
             
 
-            var result = server.Run();
+            var result = server.Run(@"C:\Users\Toshe\Desktop\Projects\csharp-server\ServerCore\cert.cer");
             result.Wait();
         }
     }

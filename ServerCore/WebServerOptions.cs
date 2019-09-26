@@ -15,7 +15,7 @@ namespace ServerCore
         internal static WebServerOptions Default = new WebServerOptions
         {
             Logger = new ConsoleLogger(),
-            Port = 2019,
+            Port = 443,
             ServerName = "Sedc Demo Server"
         };
 

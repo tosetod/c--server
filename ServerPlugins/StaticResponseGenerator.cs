@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using ServerInterfaces;
+using ServerPlugins.Infrastructure;
 
 namespace ServerPlugins
 {
@@ -21,37 +23,64 @@ namespace ServerPlugins
         public virtual async Task<Response> Generate(Request request, ILogger logger)
         {
             var path = string.Join(Path.DirectorySeparatorChar, request.Path.Split("/").Skip(1));
-            if (string.IsNullOrEmpty(path.Trim()))
-            {
-                var indexPath = Path.Combine(FolderPath, "index.html");
-                var indexHtml = await File.ReadAllTextAsync(indexPath);
-                return new Response
-                {
-                    ContentType = ContentTypes.HtmlText,
-                    Body = indexHtml
-
-                };
-            }
             var fullPath = Path.Combine(FolderPath, path);
             if (!File.Exists(fullPath))
             {
-               return new NotFoundResponse();
+                var indexPath = Path.Combine(fullPath, "index.html");
+                if (Directory.Exists(fullPath))
+                {
+                    var imageFiles = Directory.GetFiles(fullPath, "*.jpg");
+                    if (imageFiles.Length > 1)
+                    {
+                        return GalleryFolderPlugin.Generate(imageFiles);
+                        
+                    }
+                }
+                if (!File.Exists(indexPath))
+                {
+                    return new NotFoundResponse();
+                }
+
+                return await GenerateHtml(indexPath);
+            }
+
+            
+            var contentType = ContentTypes.GetContentType(fullPath);
+            if (contentType == ContentTypes.HtmlText)
+            {
+                return await GenerateHtml(fullPath);
             }
 
             var bytes = await File.ReadAllBytesAsync(fullPath);
-
-            return new Response
+            var response = new Response
             {
                 Bytes = bytes,
                 Type = ResponseType.Binary,
-                ContentType = ContentTypes.GetContentType(fullPath)
+                ContentType = contentType
+            };
+           
+            return response;
+        }
+
+        public static async Task<Response> GenerateHtml(string fullPath)
+        {
+            var fileSize = new FileInfo(fullPath).Length;
+            string html = await File.ReadAllTextAsync(fullPath);
+            StringBuilder sb = new StringBuilder(html);
+            sb.Append($"<div>Total size of html file is {fileSize} bytes</div>");
+            return new Response
+            {
+                ContentType = ContentTypes.HtmlText,
+                Body = sb.ToString()
+
             };
         }
 
         public virtual bool IsInterested(Request request, ILogger logger)
         {
             var path = $"{FolderName}";
-            return request.Path.StartsWith(path, StringComparison.InvariantCultureIgnoreCase);
+            return request.Path.StartsWith(path, StringComparison.InvariantCultureIgnoreCase)
+                || string.IsNullOrEmpty(request.Path);
         }
     }
 }
