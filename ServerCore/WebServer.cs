@@ -62,11 +62,61 @@ namespace ServerCore
             return this;
         }
 
-        public async Task Run(string certificate)
+        //public async Task Run(string certificate)
+        //{
+        //    try
+        //    {
+        //        x509Certificate = X509Certificate.CreateFromCertFile(certificate);
+        //        IPAddress localhost = IPAddress.Parse("127.0.0.1");
+
+        //        TcpListener listener = new TcpListener(localhost, Port);
+        //        listener.Start();
+
+        //        logger.Info($"Server {ServerName} Started listening on port {Port}");
+
+        //        while (true)
+        //        {
+        //            using (var client = await listener.AcceptTcpClientAsync())
+        //            {
+
+        //                logger.Info("Accepted a client");
+        //                using(SslStream sslStream = new SslStream(client.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate)))
+        //                {
+        //                    try
+        //                    {
+        //                        sslStream.AuthenticateAsClient("localhost");
+        //                    }
+        //                    catch (AuthenticationException e)
+        //                    {
+        //                        throw e;
+        //                    }
+        //                    // we can have an extension here, that changes the raw data
+        //                    var request = RequestProcessor.ProcessRequest(sslStream, logger);
+        //                    // we can have an extension here, that modifies the parsed request
+
+        //                    // we can have extensions inside the factory
+        //                    var generator = responseFactory.GetGenerator(request, logger);
+        //                    var response = await generator.Generate(request, logger);
+        //                    // we can have an extension here, that modifies the generated response
+        //                    response = await responseFactory.RunPostProcessors(response, logger);
+
+        //                    response.Send(sslStream, serverOptions);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.Error("An error occured in webserver", ex);
+        //        throw;
+        //    }
+
+        //}
+        public async Task Run()
         {
             try
             {
-                x509Certificate = X509Certificate.CreateFromCertFile(certificate);
+
                 IPAddress localhost = IPAddress.Parse("127.0.0.1");
 
                 TcpListener listener = new TcpListener(localhost, Port);
@@ -78,20 +128,11 @@ namespace ServerCore
                 {
                     using (var client = await listener.AcceptTcpClientAsync())
                     {
-                        
                         logger.Info("Accepted a client");
-                        using(SslStream sslStream = new SslStream(client.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate)))
+                        using (var clientSocket = client.Client)
                         {
-                            try
-                            {
-                                sslStream.AuthenticateAsClient("localhost");
-                            }
-                            catch (AuthenticationException e)
-                            {
-                                throw e;
-                            }
                             // we can have an extension here, that changes the raw data
-                            var request = RequestProcessor.ProcessRequest(sslStream, logger);
+                            var request = RequestProcessor.ProcessRequest(clientSocket, logger);
                             // we can have an extension here, that modifies the parsed request
 
                             // we can have extensions inside the factory
@@ -100,7 +141,7 @@ namespace ServerCore
                             // we can have an extension here, that modifies the generated response
                             response = await responseFactory.RunPostProcessors(response, logger);
 
-                            response.Send(sslStream, serverOptions);
+                            response.Send(clientSocket, serverOptions);
                         }
                     }
                 }
@@ -112,6 +153,8 @@ namespace ServerCore
             }
 
         }
+
+        
 
         public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {

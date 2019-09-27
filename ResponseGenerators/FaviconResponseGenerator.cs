@@ -11,7 +11,7 @@ namespace ResponseGenerators
 
         public async Task<Response> Generate(Request request, ILogger logger)
         {
-            var bytes = await File.ReadAllBytesAsync(@"C:\Users\Toshe\Desktop\Projects\csharp-server\ServerRunner\favicon.ico");
+            var bytes = await File.ReadAllBytesAsync(@"C:\Users\Tosho.Todorovski\Desktop\Projects\csharp-server\ServerRunner\favicon.ico");
 
             logger.Debug($"Read image {request.Path} from disk");
             return new Response
