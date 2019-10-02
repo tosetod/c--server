@@ -22,7 +22,7 @@ namespace ServerPlugins
 
         public virtual async Task<Response> Generate(Request request, ILogger logger)
         {
-            var path = string.Join(Path.DirectorySeparatorChar, request.Path.Split("/").Skip(1));
+            var path = string.Join(Path.DirectorySeparatorChar, request.Path.Split("/").Skip(2));
             var fullPath = Path.Combine(FolderPath, path);
             if (!File.Exists(fullPath))
             {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using PngResponseGeneratorLib;
 using ResponseGenerators;
 using ServerCore;
+using ServerCore.Responses;
 using ServerInterfaces;
 using ServerPlugins;
 
@@ -20,13 +21,14 @@ namespace ServerRunner
             server
                 .UseResponseGenerator<PngResponseGenerator>()
                 .UseResponseGenerator<PostMethodResponseGenerator>()
-                .UseResponseGenerator(new StaticResponseGenerator(@"C:\Users\Tosho.Todorovski\Desktop\Projects\csharp-server\SedcServer\ServerRunner\static"))
+                .UseResponseGenerator(new StaticResponseGenerator(@"C:\Users\Tosho.Todorovski\Desktop\Projects\csharp-server\ServerRunner\static"))
                 .UseResponseGenerator<FaviconResponseGenerator>()
+                .UseResponseGenerator<FileUploadGenerator>()
                 .UseResponsePostProcessor<NotFoundPostProcessor>();
 
 
             //var result = server.Run(@"C:\Users\Toshe\Desktop\Projects\csharp-server\ServerCore\cert.cer");
-            var result = server.Run();
+            Task result = server.Run();
             result.Wait();
         }
     }

@@ -17,15 +17,15 @@ namespace ServerCore.Requests
             var lines = requestData.Split(Environment.NewLine);
             var requestLine = lines.First();
             var match = RequestLineRegex.Match(requestLine);
-            if (!match.Success)
-            {
-                throw new ApplicationException("Unable to process request");
-            }
+            //if (!match.Success)
+            //{
+            //    throw new ApplicationException("Unable to process request");
+            //}
             var method = ParseHelper.ParseMethod(match.Groups[1].Value);
-            if (method == Method.None)
-            {
-                throw new ApplicationException($"Unable to match {match.Groups[1].Value} to an available method");
-            }
+            //if (method == Method.None)
+            //{
+            //    throw new ApplicationException($"Unable to match {match.Groups[1].Value} to an available method");
+            //}
 
             var path = match.Groups[2].Value;
             var query = new QueryParamCollection(match.Groups[3].Value);

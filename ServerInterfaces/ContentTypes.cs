@@ -25,6 +25,7 @@ namespace ServerInterfaces
         public const string HtmlText = "text/html";
         public const string IconImage = "image/vnd.microsoft.icon";
         public const string Anything = "application/octet-stream";
+        public static string Multipart = "multipart/x-www-form-urlencoded";
 
         public static string GetContentType(string fullPath)
         {

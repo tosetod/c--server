@@ -52,7 +52,7 @@ Body: { request.Body}");
             logger.Info("BaseResponseGenerator determining interest");
             if (ShowHeaders == HeaderOptions.ShowHeaders)
             {
-                return request.Query.HasParam("headers") 
+                return request.Query.HasParam("headers")
                     && request.Query.GetParam("headers").Equals(true.ToString(), StringComparison.InvariantCultureIgnoreCase);
             }
             return true;

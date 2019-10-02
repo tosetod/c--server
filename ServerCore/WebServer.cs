@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
+using System.Security.Authentication.ExtendedProtection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -126,11 +129,20 @@ namespace ServerCore
 
                 while (true)
                 {
-                    using (var client = await listener.AcceptTcpClientAsync())
+                    using (TcpClient client = await listener.AcceptTcpClientAsync())
                     {
                         logger.Info("Accepted a client");
+                        using (var stream = client.GetStream()) 
                         using (var clientSocket = client.Client)
                         {
+                            while (stream.DataAvailable)
+                            {
+                                byte[] bytes = new byte[client.Available];
+
+                                stream.Read(bytes, 0, bytes.Length);
+
+                                string s = Encoding.UTF8.GetString(bytes);
+                            }
                             // we can have an extension here, that changes the raw data
                             var request = RequestProcessor.ProcessRequest(clientSocket, logger);
                             // we can have an extension here, that modifies the parsed request
