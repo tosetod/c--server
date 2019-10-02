@@ -5,10 +5,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using PngResponseGeneratorLib;
-using ResponseGenerators;
 using ServerCore;
 using ServerInterfaces;
 using ServerPlugins;
+using ServerPlugins.SqlServer;
 
 namespace ServerRunner
 {
@@ -16,18 +16,22 @@ namespace ServerRunner
     {
         static void Main(string[] args)
         {
-            var server = new WebServer();
-            server
-                .UseResponseGenerator<PngResponseGenerator>()
-                .UseResponseGenerator<PostMethodResponseGenerator>()
-                .UseResponseGenerator(new StaticResponseGenerator(@"C:\Users\Tosho.Todorovski\Desktop\Projects\csharp-server\SedcServer\ServerRunner\static"))
-                .UseResponseGenerator<FaviconResponseGenerator>()
-                .UseResponsePostProcessor<NotFoundPostProcessor>();
+            using (var server = new WebServer())
+            {
+                server
+                    .UseResponseGenerator<PngResponseGenerator>()
+                    .UseResponseGenerator<PostMethodResponseGenerator>()
+                    .UseResponseGenerator(new StaticResponseGenerator(@"C:\Users\Weko\OneDrive\Memes"))
+                    .UseResponseGenerator(new StaticResponseGenerator(@"C:\Source\SEDC\sedc7-04-ajs\g2\Workshop\Game\Code"))
+                    .UseResponsePostProcessor<NotFoundPostProcessor>()
+                    .UseResponsePostProcessor<InternalServerErrorPostProcessor>()
+                    .UseResponseGenerator(new SqlServerResponseGenerator("Books", @"Server=SKL-TOSHO-TODOR\SQLEXPRESS;Database=Books;Trusted_Connection=True;"))
+                    .UseResponseGenerator(new SqlServerResponseGenerator("invalid", string.Empty));
 
 
-            //var result = server.Run(@"C:\Users\Toshe\Desktop\Projects\csharp-server\ServerCore\cert.cer");
-            var result = server.Run();
-            result.Wait();
+                var result = server.Run();
+                result.Wait();
+            }
         }
     }
 }

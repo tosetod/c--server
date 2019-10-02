@@ -24,10 +24,6 @@ namespace ServerCore.Responses
 
         public async Task<Response> Generate(Request request, ILogger logger)
         {
-            if (!string.IsNullOrEmpty(request.Path))
-            {
-                return new NotFoundResponse();
-            }
             Count += 1;
             logger.Debug($"Start generating response #{Count}");
 

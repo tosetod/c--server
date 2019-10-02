@@ -6,8 +6,14 @@ using System.Text;
 
 namespace ServerInterfaces
 {
-    public class ContentTypes
+    public static class ContentTypes
     {
+        public static string JpegImage = "image/jpeg";
+        public static string JsonApplication = "application/json";
+        public static string PlainText = "text/plain";
+        public static string HtmlText = "text/html";
+        public static string Anything = "application/octet-stream";
+
         #region Common Content Types
         private static Dictionary<string, string> CommonContentTypes = new Dictionary<string, string>
         {
@@ -19,12 +25,6 @@ namespace ServerInterfaces
         };
         #endregion
 
-        public const string JpegImage = "image/jpeg";
-        public const string JsonApplication = "application/json";
-        public const string PlainText = "text/plain";
-        public const string HtmlText = "text/html";
-        public const string IconImage = "image/vnd.microsoft.icon";
-        public const string Anything = "application/octet-stream";
 
         public static string GetContentType(string fullPath)
         {

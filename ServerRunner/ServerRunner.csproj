@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PngResponseGenerator\PngResponseGeneratorLib.csproj" />
-    <ProjectReference Include="..\ResponseGenerators\ResponseGenerators.csproj" />
     <ProjectReference Include="..\ServerCore\ServerCore.csproj" />
     <ProjectReference Include="..\ServerInterfaces\ServerInterfaces.csproj" />
     <ProjectReference Include="..\ServerPlugins\ServerPlugins.csproj" />

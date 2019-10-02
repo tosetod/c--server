@@ -5,7 +5,9 @@ namespace ServerInterfaces
     public enum ResponseCode
     {
         Ok = 200,
-        NotFound = 404
+        BadRequest = 400,
+        NotFound = 404,
+        InternalServerError = 500
     }
 
     public static class ResponseCodeHelper
@@ -18,7 +20,10 @@ namespace ServerInterfaces
                     return "Ok";
                 case ResponseCode.NotFound:
                     return "Not Found";
+                //case ResponseCode.BadRequest:
+                //    return "Bad Request";
                 default:
+                    return string.Empty;
                     throw new ApplicationException($"Response code {responseCode} is not valid");
             }
         }
